@@ -1,0 +1,33 @@
+{
+  "name": "lendsqr-be-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index",
+    "start": "node src/index",
+    "migrate": "node src/migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daposta/lendsqr-be-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daposta/lendsqr-be-test/issues"
+  },
+  "homepage": "https://github.com/daposta/lendsqr-be-test#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.0",
+    "knex": "^2.3.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3"
+  }
+}
