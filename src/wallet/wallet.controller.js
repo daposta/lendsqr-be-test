@@ -12,19 +12,15 @@ const newAccount = async(req, res) => {
 
 // A user can with username and pin
 const login = async(req, res) => {
-    
     const {username, pin} =  req.body
-    console.log(username, pin)
-    let account = await db('users').select('username','pin').where({ username: username }).first()
-    console.log('uuuu', account.pin);
+    let account = await db('users').where({ username: username }).first()
+ 
     if (!account || !bcrypt.compareSync(pin, account.pin)){
         return res.status(400).json({success:false, message:'Username or pinn is incorrect'});
     }
+    console.log('ccccc', account)
     const jwtToken = generateJwtToken(account);
-    // const ipAddress = req.ip;
-    // const refreshToken = generateRefreshToken(account, ipAddress);
-     
-
+   
     res.status(200).json({'success':true, 'message':'Login successful', data: { 
         jwtToken,
        
@@ -34,8 +30,13 @@ const login = async(req, res) => {
 
 
 // A user can fund their account
-const fundAccount = (req, res) => {
-    return res.status(200).json({"success":true, message:"Depsit successful"})
+const fundAccount = async (req, res) => {
+    const user = req.user
+    const { amount} = req.body
+    let account = await getOrCreateBalance(user.id)
+    let newBalance = account.balance + parseFloat(amount)
+    updateBalance(user.id,  newBalance)
+    return res.status(200).json({"success":true, message:`Deposit successful. New balance is ${newBalance}`})
 }
 // A user can transfer funds to another user’s account
 const transferFunds = (req, res) =>{
@@ -43,15 +44,39 @@ const transferFunds = (req, res) =>{
 }
 
 // A user can withdraw funds from their account.
-const withdrawFunds = (req, res) => {
-    return res.status(200).json({"success":true, message:"Withdrawal successful"})
+const withdrawFunds = async(req, res) => {
+    const user = req.user
+    const { amount} = req.body
+    let account = await getOrCreateBalance(user.id)
+    if (account.balance < amount){
+        return res.status(200).json({"success":true, message:"You do not have sufficient balance"})
+    }
+    let newBalance = account.balance -  parseFloat(amount)
+    updateBalance(user.id,  newBalance)
+    return res.status(200).json({"success":true, message:`Withdrawal successful. New balance is ${newBalance}`})
 }
 
 
-const getAccountBalance = () =>{
+const getOrCreateBalance = async(user_id) =>{
+    let account = await db('accounts').where({ user_id }).first()
+    console.log('fff', account)
 
+    if (account === undefined){
+        //create new account
+
+        await db('accounts').insert({user_id, balance: 0})
+        account = await db('accounts').where({ user_id }).first()
+      
+    }
+  
+    return account
 }
 
+
+const updateBalance = async(user_id, balance) => {
+    await db('accounts').update({balance}).where({ user_id })
+     
+}
 
 module.exports = {
     newAccount, fundAccount, transferFunds, withdrawFunds, login

@@ -56,10 +56,8 @@ const validateLogin = (req, res, next) => {
 const validateDeposit = (req, res, next) => {
 
     const schema = Joi.object({
-        username: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+        amount: Joi.number().required(),
+      
     });
 
     const options = {
@@ -106,10 +104,7 @@ const validateTransfer = (req, res, next) => {
 const validateWithdrawal = (req, res, next) => {
 
     const schema = Joi.object({
-        username: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+        amount: Joi.number().required(),
     });
 
     const options = {
@@ -136,5 +131,5 @@ const validateWithdrawal = (req, res, next) => {
 
 
 module.exports = {
-    validateNewAccount, validateLogin
+    validateNewAccount, validateLogin, validateDeposit, validateWithdrawal
 }
