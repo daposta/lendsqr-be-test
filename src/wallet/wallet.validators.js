@@ -79,10 +79,8 @@ const validateDeposit = (req, res, next) => {
 const validateTransfer = (req, res, next) => {
 
     const schema = Joi.object({
-        username: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+        destinationAccountUsername: Joi.string().required(),
+        amount: Joi.number().required(),
     });
 
     const options = {
@@ -131,5 +129,5 @@ const validateWithdrawal = (req, res, next) => {
 
 
 module.exports = {
-    validateNewAccount, validateLogin, validateDeposit, validateWithdrawal
+    validateNewAccount, validateLogin, validateDeposit, validateWithdrawal, validateTransfer
 }
